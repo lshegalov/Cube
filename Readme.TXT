@@ -15,3 +15,5 @@ Each side of cube is selected randomly.
 
 
 The question was the distribution and average of number of sides and vertices in these polygons.
+
+The code could be compiled in Visial C++ 19 on Windows and in Linux on g++
