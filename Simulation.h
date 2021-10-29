@@ -3,14 +3,13 @@
 class Polyhedron;
 
 
-
 class Simulation
 {
 public:
     Simulation();
     ~Simulation();
 
-    bool runOnCube(__in int nNumberOfSteps, __out Results & results, __out std::string & sErrorMsg);
+    bool runOnCube(IN int nNumberOfSteps, OUT Results & results, OUT std::string & sErrorMsg);
 
 protected:
 

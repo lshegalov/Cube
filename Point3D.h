@@ -19,7 +19,7 @@ public:
     bool operator !=(const Point3D&) const;
     bool operator <(const Point3D&) const;
 
-    static void getMidPoint(const Point3D& startPoint, const Point3D& endPoint, __out Point3D & midPoint);
+    static void getMidPoint(const Point3D& startPoint, const Point3D& endPoint, OUT Point3D & midPoint);
 
     static bool isInside(const Point3D& startPoint, const Point3D& endPoint, const Point3D & midPoint);
 

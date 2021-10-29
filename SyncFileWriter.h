@@ -10,15 +10,15 @@ public:
 
 	~SyncFileWriter();
 
-	bool createFile(__in const char * szOutputDirectory, 
-		            __in const char * szOutputFileName, // with or without .csv or other extention
-					__in const char * szExtention,      // ".csv", ".ok" ...
-		            __out std::string & sErrorMsg);
+	bool createFile(IN const char * szOutputDirectory, 
+		            IN const char * szOutputFileName, // with or without .csv or other extention
+					IN const char * szExtention,      // ".csv", ".ok" ...
+		            OUT std::string & sErrorMsg);
 
-	bool appendToFile(__in const char * szOutputDirectory, 
-		              __in const char * szOutputFileName, // with or without .csv or other extention
-					  __in const char * szExtention,      // ".csv", ".ok" ...
-		              __out std::string & sErrorMsg);
+	bool appendToFile(IN const char * szOutputDirectory, 
+		              IN const char * szOutputFileName, // with or without .csv or other extention
+					  IN const char * szExtention,      // ".csv", ".ok" ...
+		              OUT std::string & sErrorMsg);
 
 	void closeFile();
 
@@ -26,10 +26,10 @@ public:
 		
 	const char * getFullFileName() const;
 
-	bool printStrings(__in const char * szFirstColumn, const std::vector<std::string> & values,
-		              __out std::string & sErrorMsg);
-	bool printDoubles(__in const char * szFirstColumn, const std::vector<double> & values,
-					  __out std::string & sErrorMsg);
+	bool printStrings(IN const char * szFirstColumn, const std::vector<std::string> & values,
+		              OUT std::string & sErrorMsg);
+	bool printDoubles(IN const char * szFirstColumn, const std::vector<double> & values,
+					  OUT std::string & sErrorMsg);
 
 	bool write(const char* szFormat,  // (I) printf style format string.
 		       ...);                   // (I) Variable arguments. 
@@ -38,11 +38,11 @@ private:
 	//void clearData();
 	void copyFromOther(const SyncFileWriter & other);
 
-	bool appendOrCreateFile(__in const char * szOutputDirectory, 
-							__in const char * szOutputFileName, // with or without .csv or other extention
-							__in const char * szExtention,      // ".csv", ".ok" ...
-							__in bool bCreateNewFile,
-		                    __out std::string & sErrorMsg);
+	bool appendOrCreateFile(IN const char * szOutputDirectory, 
+							IN const char * szOutputFileName, // with or without .csv or other extention
+							IN const char * szExtention,      // ".csv", ".ok" ...
+							IN bool bCreateNewFile,
+		                    OUT std::string & sErrorMsg);
 
 
 

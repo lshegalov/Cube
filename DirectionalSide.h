@@ -13,7 +13,7 @@ public:
     const Point3D & getStartPoint() const { return m_startPoint; }
     const Point3D & getEndPoint() const { return m_endPoint; }
 
-    bool insertOneInternalPoint(const Point3D & newPoint, __out std::string& sErrorMsg);
+    bool insertOneInternalPoint(const Point3D & newPoint, OUT std::string& sErrorMsg);
 
     void insertInternalPoints(const std::set<Point3D>& internalPoints);
 

@@ -18,28 +18,28 @@ public:
  
     virtual ~Polyhedron();
 
-    virtual bool buildSurface(__out std::string& sErrorMsg) = 0;
+    virtual bool buildSurface(OUT std::string& sErrorMsg) = 0;
 
     // build initial polygons from point sequence 
-    bool addPolygonFromPoints(__in const std::vector<Point3D>& points, 
-        __out long & lPolygonSequentialNumber,
-        __out std::string & sErrorMsg);
+    bool addPolygonFromPoints(IN const std::vector<Point3D>& points, 
+        OUT long & lPolygonSequentialNumber,
+        OUT std::string & sErrorMsg);
 
     bool addPolygonFromSides(
-        __in const std::vector<long>& sideNumbers,
-        __out long  & lPolygonSequentialNumber, 
-        __out std::string& sErrorMsg);
+        IN const std::vector<long>& sideNumbers,
+        OUT long  & lPolygonSequentialNumber, 
+        OUT std::string& sErrorMsg);
 
-    bool getSide(__in long lSideSequentialNumber,
-                 __out DirectionalSide** ppSide,
-                 __out std::string& sErrorMsg);
+    bool getSide(IN long lSideSequentialNumber,
+                 OUT DirectionalSide** ppSide,
+                 OUT std::string& sErrorMsg);
 
 
     // add side if it does not exist, otherwise return existing lEdgeSelSideSequentialNumberquentialNumber
-    bool addSide(__in const Point3D& startPoint,
-                 __in const Point3D& endPoint,
-                 __out long& lSideSequentialNumber,
-                 __out std::string& sErrorMsg);
+    bool addSide(IN const Point3D& startPoint,
+                 IN const Point3D& endPoint,
+                 OUT long& lSideSequentialNumber,
+                 OUT std::string& sErrorMsg);
 
 
     size_t getNumberOfPoligons() const;
@@ -48,26 +48,26 @@ public:
 
     const std::map<long, DirectionalSide>& getSides() const { return m_sides; }
      
-    bool splitOnePolygon(__out std::string& sErrorMsg);
+    bool splitOnePolygon(OUT std::string& sErrorMsg);
 
 
-    bool insertPointIntoSide(__in long lSideSequentialNumber,
-                             __in const Point3D& midPoint,
-                             __out std::string & sErrorMsg);
+    bool insertPointIntoSide(IN long lSideSequentialNumber,
+                             IN const Point3D& midPoint,
+                             OUT std::string & sErrorMsg);
 
     // clean up if that side is not used in any polygons
-    bool deleteUnusedSide(long lSideSequentialNumber, __out std::string& sErrorMsg);
+    bool deleteUnusedSide(long lSideSequentialNumber, OUT std::string& sErrorMsg);
 
     bool getStatsPerPolygons(
-        __out Results & results,
-        __out std::string& sErrorMsg);
+        OUT Results & results,
+        OUT std::string& sErrorMsg);
 
-    bool updateStats(__in int nNumberOfSteps, __inout Results& results, __out std::string& sErrorMsg);
+    bool updateStats(IN int nNumberOfSteps, __inout Results& results, OUT std::string& sErrorMsg);
    
 
-    bool printPolygons(const char * szFileName, __out std::string& sErrorMsg) const;
+    bool printPolygons(const char * szFileName, OUT std::string& sErrorMsg) const;
 
-    bool printEdges(const char* szFileName, __out std::string& sErrorMsg) const;
+    bool printEdges(const char* szFileName, OUT std::string& sErrorMsg) const;
 
 protected:
 
@@ -75,9 +75,9 @@ protected:
     void updateOppositeSide(long lEdgeSequentialNumber);
 
     // to the end without checking existing edges
-    void appendSide(__in const Point3D& startPoint,
-                    __in const Point3D& endPoint,
-                    __out long& lEdgeSequentialNumber);
+    void appendSide(IN const Point3D& startPoint,
+                    IN const Point3D& endPoint,
+                    OUT long& lEdgeSequentialNumber);
 
 protected:
 

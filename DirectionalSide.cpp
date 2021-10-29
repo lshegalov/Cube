@@ -9,9 +9,9 @@ DirectionalSide::DirectionalSide() :
 }
 
 DirectionalSide::DirectionalSide(
-    __in long lSideSequentialNumber, // parent
-    __in const Point3D& startPoint,
-    __in const Point3D& endPoint) :
+    IN long lSideSequentialNumber, // parent
+    IN const Point3D& startPoint,
+    IN const Point3D& endPoint) :
     m_lSideSequentialNumber(lSideSequentialNumber),
     m_startPoint(startPoint),
     m_endPoint(endPoint)
@@ -20,8 +20,8 @@ DirectionalSide::DirectionalSide(
 }
 
 bool DirectionalSide::insertOneInternalPoint(
-    __in const Point3D & newPoint,
-    __out std::string& sErrorMsg)
+    IN const Point3D & newPoint,
+    OUT std::string& sErrorMsg)
 {
     if (newPoint == m_startPoint)
     {
@@ -63,9 +63,9 @@ void DirectionalSide::insertInternalPoints(const std::set<Point3D>& internalPoin
 
 // points between (not including borders
 void  DirectionalSide::getInternalPoints(
-    __in const Point3D& startIntervalPoint,
-    __in const Point3D& endIntervalPoint,
-    __out std::set<Point3D>& internalPoints) const
+    IN const Point3D& startIntervalPoint,
+    IN const Point3D& endIntervalPoint,
+    OUT std::set<Point3D>& internalPoints) const
 {
     internalPoints.clear();
     for (std::set<Point3D>::const_iterator pointIter = m_internalPoints.cbegin();

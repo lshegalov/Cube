@@ -12,33 +12,33 @@ Splitter::Splitter(Polyhedron* pPolyhedron):
 
 bool Splitter::splitPoligon(
     __inout Poligon& oldPolygon, 
-    __out long & lNewPolygonSequentialNumber,
-    __out std::string& sErrorMsg)
+    OUT long & lNewPolygonSequentialNumber,
+    OUT std::string& sErrorMsg)
 {
     lNewPolygonSequentialNumber = -1;
 
-    const long lOldPolygonSequentialNumber = oldPolygon.getSequentialNumber();
+    //const long lOldPolygonSequentialNumber = oldPolygon.getSequentialNumber();
 
-    if ( ! createSplittedEdgeInfos(__in oldPolygon, __out sErrorMsg))
+    if ( ! createSplittedEdgeInfos(IN oldPolygon, OUT sErrorMsg))
     {
         return false;
     }
 
     // split existing 2 sides to split into two each
-    if ( ! createFourNewSides(__out sErrorMsg))
+    if ( ! createFourNewSides(OUT sErrorMsg))
     {
         return false;
     }
 
     // create new sides between mid points
-    if ( ! insertMidPointSides(__out sErrorMsg))
+    if ( ! insertMidPointSides(OUT sErrorMsg))
     {
         return false;
     }
 
     if ( ! makeNewPolygonAndUpdateOld(__inout oldPolygon,
-                                      __out lNewPolygonSequentialNumber,
-                                      __out sErrorMsg))
+                                      OUT lNewPolygonSequentialNumber,
+                                      OUT sErrorMsg))
     {
         return false;
     }
@@ -47,12 +47,12 @@ bool Splitter::splitPoligon(
         SplittedEdgeInfo>::const_iterator splitIter = m_splitInfos.cbegin();
         splitIter != m_splitInfos.cend(); splitIter++)
     {
-        int nEdge = splitIter->first;
+        //int nEdge = splitIter->first;
         const SplittedEdgeInfo& splitInfo = splitIter->second;
 
         // insert midPoint into old side and its opposite
-        if ( ! insertMidPointInTheOldSide(__in splitInfo,
-                                          __out sErrorMsg))
+        if ( ! insertMidPointInTheOldSide(IN splitInfo,
+                                          OUT sErrorMsg))
         {
             return false;
         }
@@ -63,11 +63,11 @@ bool Splitter::splitPoligon(
         SplittedEdgeInfo>::const_iterator splitIter = m_splitInfos.cbegin();
         splitIter != m_splitInfos.cend(); splitIter++)
     {
-        int nEdge = splitIter->first;
+        //int nEdge = splitIter->first;
         const SplittedEdgeInfo& splitInfo = splitIter->second;
 
         // clean up if that side is not used in any polygons
-        if ( ! m_pPolyhedron->deleteUnusedSide(splitInfo.lOldSideSequentialNumber, __out sErrorMsg))
+        if ( ! m_pPolyhedron->deleteUnusedSide(splitInfo.lOldSideSequentialNumber, OUT sErrorMsg))
         {
             return false;
         }
@@ -76,17 +76,17 @@ bool Splitter::splitPoligon(
     return true;
 }
 
-bool Splitter::createSplittedEdgeInfos(__in const Poligon& oldPolygon, __out std::string& sErrorMsg)
+bool Splitter::createSplittedEdgeInfos(IN const Poligon& oldPolygon, OUT std::string& sErrorMsg)
 {
-    const int nNumberOfSides = (int) oldPolygon.getNumberOfSides();
+    //const int nNumberOfSides = (int) oldPolygon.getNumberOfSides();
 
     const std::vector<long>& oldSideNumbers = oldPolygon.getSideNumbers();
 
 
     std::set<int> edgesSidesToSplit;
-    if ( ! generateRandomEdgesToSplit(__in oldPolygon,
-                                      __out edgesSidesToSplit,
-                                      __out sErrorMsg))
+    if ( ! generateRandomEdgesToSplit(IN oldPolygon,
+                                      OUT edgesSidesToSplit,
+                                      OUT sErrorMsg))
     {
         return false;
     }
@@ -94,9 +94,9 @@ bool Splitter::createSplittedEdgeInfos(__in const Poligon& oldPolygon, __out std
     assert(edgesSidesToSplit.size() == 2);
 
     sErrorMsg = "";
-    if ( ! checkValidityOfSelectedSides(__in oldSideNumbers, // side sequential numbers
-                                        __in edgesSidesToSplit,
-                                        __out sErrorMsg))
+    if ( ! checkValidityOfSelectedSides(IN oldSideNumbers, // side sequential numbers
+                                        IN edgesSidesToSplit,
+                                        OUT sErrorMsg))
     {
             return false;
     }
@@ -106,9 +106,9 @@ bool Splitter::createSplittedEdgeInfos(__in const Poligon& oldPolygon, __out std
 }
 
 bool Splitter::checkValidityOfSelectedSides(
-    __in const std::vector<long>& oldSideNumbers, // side sequential numbers
-    __in const std::set<int> & edgesSidesToSplit,
-    __out std::string& sErrorMsg)
+    IN const std::vector<long>& oldSideNumbers, // side sequential numbers
+    IN const std::set<int> & edgesSidesToSplit,
+    OUT std::string& sErrorMsg)
 {
     m_splitInfos.clear();
 
@@ -128,9 +128,9 @@ bool Splitter::checkValidityOfSelectedSides(
         splitInfo.lOldSideSequentialNumber = lSideSequentialNumber;
 
         DirectionalSide * pSide = nullptr;
-        if ( ! m_pPolyhedron->getSide(__in lSideSequentialNumber,
-                                      __out & pSide,
-                                      __out sErrorMsg))
+        if ( ! m_pPolyhedron->getSide(IN lSideSequentialNumber,
+                                      OUT & pSide,
+                                      OUT sErrorMsg))
         {
             return false;
         }
@@ -138,7 +138,7 @@ bool Splitter::checkValidityOfSelectedSides(
         splitInfo.startPoint = pSide->getStartPoint();
         splitInfo.endPoint = pSide->getEndPoint();
 
-        Point3D::getMidPoint(__in splitInfo.startPoint, __in splitInfo.endPoint, __out splitInfo.midPoint);
+        Point3D::getMidPoint(IN splitInfo.startPoint, IN splitInfo.endPoint, OUT splitInfo.midPoint);
 
         m_splitInfos[nSide] = splitInfo;
 
@@ -179,9 +179,9 @@ bool Splitter::checkValidityOfSelectedSides(
 }
 
 bool Splitter::generateRandomEdgesToSplit(
-    __in const Poligon& oldPolygon,
-    __out std::set<int> & edgesSidesToSplit,
-    __out std::string& sErrorMsg)
+    IN const Poligon& oldPolygon,
+    OUT std::set<int> & edgesSidesToSplit,
+    OUT std::string& sErrorMsg)
 {
     const int nNumberOfSides = (int) oldPolygon.getNumberOfSides();
 
@@ -255,7 +255,7 @@ Splitter::SplittedEdgeInfo* Splitter::getSecondSplitInfo()
 
 // split existing 2 sides to split into two each
 bool Splitter::createFourNewSides(
-    __out std::string& sErrorMsg)
+    OUT std::string& sErrorMsg)
 {
     for (std::map<int, // edge # in oriented edges
         SplittedEdgeInfo>::iterator splitIter = m_splitInfos.begin();
@@ -266,7 +266,7 @@ bool Splitter::createFourNewSides(
 
         if ( ! createTwoNewSidesOutOfOldOne(__inout splitInfo, // returns lFirstHalfSideSequentialNumber,
                                                                // lSecondHalfSideSequentialNumber,
-                                            __out sErrorMsg))
+                                            OUT sErrorMsg))
         {
             return false;
         }
@@ -279,15 +279,15 @@ bool Splitter::createFourNewSides(
 bool Splitter::createTwoNewSidesOutOfOldOne(
     __inout SplittedEdgeInfo& splitInfo, // returns lFirstHalfSideSequentialNumber,
                                          // lSecondHalfSideSequentialNumber,
-    __out std::string& sErrorMsg)
+    OUT std::string& sErrorMsg)
 {
     splitInfo.lFirstHalfSideSequentialNumber = -1;
     splitInfo.lSecondHalfSideSequentialNumber = -1;
 
     DirectionalSide* pOldSide = nullptr;
-    if ( ! m_pPolyhedron->getSide(__in splitInfo.lOldSideSequentialNumber,
-        __out & pOldSide,
-        __out sErrorMsg))
+    if ( ! m_pPolyhedron->getSide(IN splitInfo.lOldSideSequentialNumber,
+        OUT & pOldSide,
+        OUT sErrorMsg))
     {
         return false;
     }
@@ -311,19 +311,20 @@ bool Splitter::createTwoNewSidesOutOfOldOne(
         long lNewSideSequentialNumber = -1;
 
         // add side if it does not exist, otherwise return existing lSideSequentialNumber
-        if (!m_pPolyhedron->addSide(__in startIntervalPoint,
-                                    __in endIntervalPoint,
-                                    __out lNewSideSequentialNumber,
-                                    __out sErrorMsg))
+        if (!m_pPolyhedron->addSide(IN startIntervalPoint,
+                                    IN endIntervalPoint,
+                                    OUT lNewSideSequentialNumber,
+                                    OUT sErrorMsg))
         {
             return false;
         }
 
+#ifdef _DEBUG
         if (TEST_SIDE == lNewSideSequentialNumber)
         {
             int k = 0;
         }
-
+#endif
         if (nPart == 0)
         {
             splitInfo.lFirstHalfSideSequentialNumber = lNewSideSequentialNumber;
@@ -336,8 +337,8 @@ bool Splitter::createTwoNewSidesOutOfOldOne(
         std::set<Point3D> internalPoints;
 
         // points between (not including borders
-        pOldSide->getInternalPoints(__in startIntervalPoint, __in endIntervalPoint,
-                                    __out internalPoints);
+        pOldSide->getInternalPoints(IN startIntervalPoint, IN endIntervalPoint,
+                                    OUT internalPoints);
 
         if (internalPoints.empty())
         {
@@ -345,9 +346,9 @@ bool Splitter::createTwoNewSidesOutOfOldOne(
         }
 
         DirectionalSide* pNewSide = nullptr;
-        if ( ! m_pPolyhedron->getSide(__in lNewSideSequentialNumber,
-                                        __out & pNewSide,
-                                        __out sErrorMsg))
+        if ( ! m_pPolyhedron->getSide(IN lNewSideSequentialNumber,
+                                        OUT & pNewSide,
+                                        OUT sErrorMsg))
         {
             return false;
         }
@@ -360,21 +361,21 @@ bool Splitter::createTwoNewSidesOutOfOldOne(
 
 // insert midPoint into old side and its opposite
 bool Splitter::insertMidPointInTheOldSide(
-    __in const SplittedEdgeInfo& splitInfo,
-    __out std::string& sErrorMsg)
+    IN const SplittedEdgeInfo& splitInfo,
+    OUT std::string& sErrorMsg)
 {
     // replace lOldEdgeSequentialNumber by lFirstHalfEdgeSequentialNumber, lSecondHalfEdgeSequentialNumber for all polygons except for lOldPolygonSequentialNumber
-    if ( ! m_pPolyhedron->insertPointIntoSide(__in splitInfo.lOldSideSequentialNumber,
-                                              __in splitInfo.midPoint,
-                                              __out sErrorMsg))
+    if ( ! m_pPolyhedron->insertPointIntoSide(IN splitInfo.lOldSideSequentialNumber,
+                                              IN splitInfo.midPoint,
+                                              OUT sErrorMsg))
     {
         return false;
     }
 
     DirectionalSide* pSide = nullptr;
-    if ( ! m_pPolyhedron->getSide(__in splitInfo.lOldSideSequentialNumber,
-                                  __out & pSide,
-                                  __out sErrorMsg))
+    if ( ! m_pPolyhedron->getSide(IN splitInfo.lOldSideSequentialNumber,
+                                  OUT & pSide,
+                                  OUT sErrorMsg))
     {
         return false;
     }
@@ -385,14 +386,14 @@ bool Splitter::insertMidPointInTheOldSide(
         return true;
     }
 
-    return m_pPolyhedron->insertPointIntoSide(__in lOppositeSequentialNumber,
-                                                __in splitInfo.midPoint,
-                                                __out sErrorMsg);
+    return m_pPolyhedron->insertPointIntoSide(IN lOppositeSequentialNumber,
+                                                IN splitInfo.midPoint,
+                                                OUT sErrorMsg);
 }
 
 // create new sides between mid points
 bool Splitter::insertMidPointSides(
-    __out std::string& sErrorMsg)
+    OUT std::string& sErrorMsg)
 {
     SplittedEdgeInfo* pFirstSplitInfo = getFirstSplitInfo();
     if (pFirstSplitInfo == nullptr)
@@ -413,35 +414,35 @@ bool Splitter::insertMidPointSides(
     }
 
 
-    if (! m_pPolyhedron->addSide(__in pFirstSplitInfo->midPoint, // startPoint,
-                                 __in pSecondSplitInfo->midPoint,
-                                 __out pFirstSplitInfo->lInsertedMidPointSideNumber,
-                                 __out sErrorMsg))
+    if (! m_pPolyhedron->addSide(IN pFirstSplitInfo->midPoint, // startPoint,
+                                 IN pSecondSplitInfo->midPoint,
+                                 OUT pFirstSplitInfo->lInsertedMidPointSideNumber,
+                                 OUT sErrorMsg))
     {
         return false;
     }
 
-    if ( ! m_pPolyhedron->addSide(__in pSecondSplitInfo->midPoint, // startPoint,
-                                  __in pFirstSplitInfo->midPoint,
-                                  __out pSecondSplitInfo->lInsertedMidPointSideNumber,
-                                  __out sErrorMsg))
+    if ( ! m_pPolyhedron->addSide(IN pSecondSplitInfo->midPoint, // startPoint,
+                                  IN pFirstSplitInfo->midPoint,
+                                  OUT pSecondSplitInfo->lInsertedMidPointSideNumber,
+                                  OUT sErrorMsg))
     {
         return false;
     }
 
     DirectionalSide* pFirstSide = nullptr;
-    if ( ! m_pPolyhedron->getSide(__in pFirstSplitInfo->lInsertedMidPointSideNumber,
-                                 __out & pFirstSide,
-                                 __out sErrorMsg))
+    if ( ! m_pPolyhedron->getSide(IN pFirstSplitInfo->lInsertedMidPointSideNumber,
+                                 OUT & pFirstSide,
+                                 OUT sErrorMsg))
     {
         return false;
     }
     pFirstSide->setOppositeSideNumber(pSecondSplitInfo->lInsertedMidPointSideNumber);
 
     DirectionalSide* pSecondSide = nullptr;
-    if ( ! m_pPolyhedron->getSide(__in pSecondSplitInfo->lInsertedMidPointSideNumber,
-                                  __out & pSecondSide,
-                                   __out sErrorMsg))
+    if ( ! m_pPolyhedron->getSide(IN pSecondSplitInfo->lInsertedMidPointSideNumber,
+                                  OUT & pSecondSide,
+                                   OUT sErrorMsg))
     {
         return false;
     }
@@ -453,8 +454,8 @@ bool Splitter::insertMidPointSides(
 
 bool Splitter::makeNewPolygonAndUpdateOld(
     __inout Poligon& oldPolygon,
-    __out long& lNewPolygonSequentialNumber,
-    __out std::string& sErrorMsg)
+    OUT long& lNewPolygonSequentialNumber,
+    OUT std::string& sErrorMsg)
 {
     SplittedEdgeInfo* pFirstSplitInfo = getFirstSplitInfo();
     if (pFirstSplitInfo == nullptr)
@@ -540,8 +541,8 @@ bool Splitter::makeNewPolygonAndUpdateOld(
 
     // update old polygon by firstVector
     // 
-    if ( ! oldPolygon.updateSides(__in firstSideNumbers,
-                                  __out sErrorMsg))
+    if ( ! oldPolygon.updateSides(IN firstSideNumbers,
+                                  OUT sErrorMsg))
     {
         return false;
     }
@@ -550,9 +551,9 @@ bool Splitter::makeNewPolygonAndUpdateOld(
     // new polygon with second vector
     // 
     // in all remaining 
-    if ( ! m_pPolyhedron->addPolygonFromSides(__in secondSideNumbers,
-                                            __out lNewPolygonSequentialNumber,
-                                            __out sErrorMsg))
+    if ( ! m_pPolyhedron->addPolygonFromSides(IN secondSideNumbers,
+                                            OUT lNewPolygonSequentialNumber,
+                                            OUT sErrorMsg))
     {
         return false;
     }
@@ -561,15 +562,15 @@ bool Splitter::makeNewPolygonAndUpdateOld(
 }
 
 bool Splitter::insertPointIntoSide(
-    __in long lSideSequentialNumber,
-    __in const Point3D& newPoint,
-    __out std::string& sErrorMsg)
+    IN long lSideSequentialNumber,
+    IN const Point3D& newPoint,
+    OUT std::string& sErrorMsg)
 {
     DirectionalSide * pSide = nullptr;
 
-    if ( ! m_pPolyhedron->getSide(__in lSideSequentialNumber,
-                                  __out & pSide,
-                                  __out sErrorMsg))
+    if ( ! m_pPolyhedron->getSide(IN lSideSequentialNumber,
+                                  OUT & pSide,
+                                  OUT sErrorMsg))
     {
         return false;
     }

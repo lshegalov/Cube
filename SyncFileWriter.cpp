@@ -64,44 +64,48 @@ const char * SyncFileWriter::getFullFileName() const
 }
 
 bool SyncFileWriter::createFile(
-	__in const char * szOutputDirectory, 
-	__in const char * szOutputFileName, // with or without .csv or other extention
-	__in const char * szExtention,      // ".csv", ".ok" ...
-    __out std::string & sErrorMsg)
+	IN const char * szOutputDirectory, 
+	IN const char * szOutputFileName, // with or without .csv or other extention
+	IN const char * szExtention,      // ".csv", ".ok" ...
+    OUT std::string & sErrorMsg)
 {
 	bool bCreateNewFile = true;
-	return appendOrCreateFile(__in szOutputDirectory, 
-							  __in szOutputFileName, // with or without .csv or other extention
-							  __in szExtention,      // ".csv", ".ok" ...
-							  __in bCreateNewFile,
-							  __out sErrorMsg);
+	return appendOrCreateFile(IN szOutputDirectory, 
+							  IN szOutputFileName, // with or without .csv or other extention
+							  IN szExtention,      // ".csv", ".ok" ...
+							  IN bCreateNewFile,
+							  OUT sErrorMsg);
 }
 
 bool SyncFileWriter::appendToFile(
-	__in const char * szOutputDirectory, 
-	__in const char * szOutputFileName, // with or without .csv or other extention
-	__in const char * szExtention,      // ".csv", ".ok" ...
-	__out std::string & sErrorMsg)
+	IN const char * szOutputDirectory, 
+	IN const char * szOutputFileName, // with or without .csv or other extention
+	IN const char * szExtention,      // ".csv", ".ok" ...
+	OUT std::string & sErrorMsg)
 {
 	bool bCreateNewFile = false;
-	return appendOrCreateFile(__in szOutputDirectory, 
-							  __in szOutputFileName, // with or without .csv or other extention
-							  __in szExtention,      // ".csv", ".ok" ...
-							  __in bCreateNewFile,
-							  __out sErrorMsg);
+	return appendOrCreateFile(IN szOutputDirectory, 
+							  IN szOutputFileName, // with or without .csv or other extention
+							  IN szExtention,      // ".csv", ".ok" ...
+							  IN bCreateNewFile,
+							  OUT sErrorMsg);
 }
 
 bool SyncFileWriter::appendOrCreateFile(
-	__in const char * szOutputDirectory, 
-	__in const char * szOutputFileName,     // with or without .csv or other extention
-	__in const char * szRequiredExtention,  // ".csv", ".ok" ...
-	__in bool bCreateNewFile,
-	__out std::string & sErrorMsg)
+	IN const char * szOutputDirectory, 
+	IN const char * szOutputFileName,     // with or without .csv or other extention
+	IN const char * szRequiredExtention,  // ".csv", ".ok" ...
+	IN bool bCreateNewFile,
+	OUT std::string & sErrorMsg)
 {
 
-	if (_mkdir( szOutputDirectory ) == ENOENT)
+	if (_mkdir( szOutputDirectory 
+#ifdef __GNUC__
+		, 077
+#endif
+	) == ENOENT)
 	{
-		_snprintf_s(m_szErrorMsg, _TRUNCATE, "%s:%d Failed to create DirectoryName =%s<< \n", 
+		sprintf_s(m_szErrorMsg, "%s:%d Failed to create DirectoryName =%s<< \n", 
 				 __FILE__, __LINE__, szOutputDirectory); 
 
 		sErrorMsg = m_szErrorMsg;
@@ -129,7 +133,7 @@ bool SyncFileWriter::appendOrCreateFile(
 	char szFullFileName[MAX_PATH];
 	if (sprintf_s(szFullFileName, "%s\\%s", szOutputDirectory, szFileName) < 0)
 	{
-		_snprintf_s(m_szErrorMsg, _TRUNCATE, "%s:%d szFullFileName =%s is too long \n", 
+		sprintf_s(m_szErrorMsg, "%s:%d szFullFileName =%s is too long \n",
 					__FILE__, __LINE__, szFullFileName); 
 		sErrorMsg = m_szErrorMsg;
 		return false;
@@ -145,15 +149,22 @@ bool SyncFileWriter::appendOrCreateFile(
 	else
 		szMode = "atc";
 
-	if ( fopen_s(& m_pFile, szFullFileName, szMode) != 0 )
+	int nError = 0;
+#ifdef _MSC_BUILD
+	nError = fopen_s(&m_pFile, szFullFileName, szMode);
+	if (nError != 0 )
 	{
-		if ( fopen_s(& m_pFile, szFullFileName, szMode) != 0 )
-		{
-			_snprintf_s(m_szErrorMsg, _TRUNCATE, "%s:%d Could not create file =%s \n", 
-						__FILE__, __LINE__, szFullFileName); 
-			sErrorMsg = m_szErrorMsg;
-			return false;
-		}
+#else
+	m_pFile = fopen(szFullFileName, szMode);
+	if (m_pFile == NULL)
+	{ 
+#endif
+		nError = errno;
+		
+		sprintf_s(m_szErrorMsg, "%s:%d Could not create file =%s err=%d\n",
+						__FILE__, __LINE__, szFullFileName, nError);
+		sErrorMsg = m_szErrorMsg;
+		return false;
 	}
 
 	return true;
@@ -199,9 +210,9 @@ bool SyncFileWriter::writeWithFormat(const char * szFormat,  va_list parminfo)
 }
 
 bool SyncFileWriter::printStrings(
-	__in const char * szFirstColumn, 
-	__in const std::vector<std::string> & values,
-	__out std::string & sErrorMsg)
+	IN const char * szFirstColumn, 
+	IN const std::vector<std::string> & values,
+	OUT std::string & sErrorMsg)
 {
 	if (m_pFile == NULL)
 		return true;
@@ -212,7 +223,7 @@ bool SyncFileWriter::printStrings(
 
 	if (fputs(szFirstColumn, m_pFile) == EOF)
 	{
-		_snprintf_s(m_szErrorMsg, _TRUNCATE, "%s:%d Could not write to %s \n", 
+		sprintf_s(m_szErrorMsg, "%s:%d Could not write to %s \n", 
 					__FILE__, __LINE__, m_sFullFileName.c_str()); 
 		sErrorMsg = m_szErrorMsg;
 
@@ -231,7 +242,7 @@ bool SyncFileWriter::printStrings(
 
 		if (fputs(sValue.c_str(), m_pFile) == EOF)
 		{
-			_snprintf_s(m_szErrorMsg, _TRUNCATE, "%s:%d Could not write to %s \n", 
+			sprintf_s(m_szErrorMsg, "%s:%d Could not write to %s \n", 
 						__FILE__, __LINE__, m_sFullFileName.c_str()); 
 			sErrorMsg = m_szErrorMsg;
 
@@ -252,8 +263,8 @@ bool SyncFileWriter::printStrings(
 	return true;
 }
  
-bool SyncFileWriter::printDoubles(__in const char * szFirstColumn, const std::vector<double> & values,
-	__out std::string & sErrorMsg)
+bool SyncFileWriter::printDoubles(IN const char * szFirstColumn, const std::vector<double> & values,
+	OUT std::string & sErrorMsg)
 {
 	if (m_pFile == NULL)
 		return true;
@@ -263,7 +274,7 @@ bool SyncFileWriter::printDoubles(__in const char * szFirstColumn, const std::ve
 #endif
 	if (fputs(szFirstColumn, m_pFile) == EOF)
 	{
-		_snprintf_s(m_szErrorMsg, _TRUNCATE, "%s:%d Could not write to %s \n", 
+		sprintf_s(m_szErrorMsg, "%s:%d Could not write to %s \n", 
 					__FILE__, __LINE__, m_sFullFileName.c_str()); 
 		sErrorMsg = m_szErrorMsg;
 
@@ -284,7 +295,7 @@ bool SyncFileWriter::printDoubles(__in const char * szFirstColumn, const std::ve
 
 		if (fputs(m_szInputBuffer, m_pFile) == EOF)
 		{
-			_snprintf_s(m_szErrorMsg, _TRUNCATE, "%s:%d Could not write to %s \n", 
+			sprintf_s(m_szErrorMsg, "%s:%d Could not write to %s \n", 
 						__FILE__, __LINE__, m_sFullFileName.c_str()); 
 			sErrorMsg = m_szErrorMsg;
 

@@ -16,8 +16,8 @@ Poligon::Poligon()
 
 
 Poligon::Poligon(Polyhedron* pParent, 
-    __in long lSequentialNumber,
-    __in const std::vector<long>& sideNumbers) :
+    IN long lSequentialNumber,
+    IN const std::vector<long>& sideNumbers) :
     m_pParent(pParent),
     m_lSequentialNumber(lSequentialNumber),
     m_sideNumbers(sideNumbers)
@@ -31,7 +31,7 @@ size_t Poligon::getNumberOfSides() const
 }
 
 
-bool Poligon::getNumberOfPoints(__out size_t* pnNumberOfPoints, __out std::string& sErrorMsg) const
+bool Poligon::getNumberOfPoints(OUT size_t* pnNumberOfPoints, OUT std::string& sErrorMsg) const
 {
     size_t nTotalNumberOfPoints = m_sideNumbers.size();
 
@@ -39,9 +39,9 @@ bool Poligon::getNumberOfPoints(__out size_t* pnNumberOfPoints, __out std::strin
     {
         DirectionalSide* pSide = nullptr;
 
-        if ( ! m_pParent->getSide(__in lSideNumber,
-                                  __out & pSide,
-                                  __out sErrorMsg))
+        if ( ! m_pParent->getSide(IN lSideNumber,
+                                  OUT & pSide,
+                                  OUT sErrorMsg))
         {
             return false;
         }
@@ -54,16 +54,16 @@ bool Poligon::getNumberOfPoints(__out size_t* pnNumberOfPoints, __out std::strin
 }
 
 bool Poligon::updateSides(
-    __in const std::vector<long>& sideNumbers,
-    __out std::string& sErrorMsg)
+    IN const std::vector<long>& sideNumbers,
+    OUT std::string& sErrorMsg)
 {
     m_sideNumbers = sideNumbers;
 
-    return checkValidityOfPoligon(__out sErrorMsg);
+    return checkValidityOfPoligon(OUT sErrorMsg);
 }
 
 // must be closed with consecutive edges
-bool Poligon::checkValidityOfPoligon(__out std::string& sErrorMsg) const
+bool Poligon::checkValidityOfPoligon(OUT std::string& sErrorMsg) const
 {
     char szErrorMsg[ERROR_MSG_LEN];
     sErrorMsg[0] = '\0';
@@ -89,9 +89,9 @@ bool Poligon::checkValidityOfPoligon(__out std::string& sErrorMsg) const
 
         lTotalSideNumbers.insert(lSideNumber);
 
-        if ( ! m_pParent->getSide(__in lSideNumber,
-                                  __out & pSide,
-                                  __out sErrorMsg))
+        if ( ! m_pParent->getSide(IN lSideNumber,
+                                  OUT & pSide,
+                                  OUT sErrorMsg))
         {
             return false;
         }

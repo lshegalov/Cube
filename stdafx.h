@@ -25,12 +25,16 @@
 
 #include <iostream>
 #include <iomanip>
-#include <strstream> 
+
 #include <locale> 
 
 
 #include <ctype.h>
+#ifdef _MSC_BUILD
 #include <direct.h>
+#include <strstream> 
+#endif
+
 #include <errno.h>
 #include <float.h>
 #include <limits.h>
@@ -43,7 +47,19 @@
 #include <string.h>
 #include <time.h>
 
+#ifdef __GNUC__
+#include <sys/stat.h>
+#include <limits.h>
+#include <strings.h>
+#include <unistd.h>
 
+#define _mkdir mkdir
+#define sprintf_s sprintf
+#define strcat_s strcat
+#define _stricmp strcasecmp
+#define strcpy_s strcpy
+#define vsprintf_s vsprintf
+#endif
 
 #define ERROR_MSG_LEN 2000
 

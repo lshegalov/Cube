@@ -12,21 +12,21 @@ class Poligon
 {
 public:
     Poligon();
-    Poligon(__in Polyhedron* pParent,
-            __in long lSequentialNumber,
-            __in const std::vector<long> & sideNumbers);
+    Poligon(IN Polyhedron* pParent,
+            IN long lSequentialNumber,
+            IN const std::vector<long> & sideNumbers);
 
     // must be closed with consecutive sides
-    bool checkValidityOfPoligon(__out std::string& sErrorMsg) const;
+    bool checkValidityOfPoligon(OUT std::string& sErrorMsg) const;
 
     size_t getNumberOfSides() const;
 
-    bool getNumberOfPoints(__out size_t * pnNumberOfPoints, __out std::string& sErrorMsg) const;
+    bool getNumberOfPoints(OUT size_t * pnNumberOfPoints, OUT std::string& sErrorMsg) const;
 
     const std::vector<long> & getSideNumbers() const { return m_sideNumbers; }
 
-    bool updateSides(__in const std::vector<long> & sideNumbers,
-                     __out std::string& sErrorMsg);
+    bool updateSides(IN const std::vector<long> & sideNumbers,
+                     OUT std::string& sErrorMsg);
 
     long getSequentialNumber() const { return m_lSequentialNumber; }
 

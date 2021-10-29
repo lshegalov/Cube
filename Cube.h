@@ -8,6 +8,6 @@ public:
     Cube();
     virtual ~Cube();
 
-    virtual bool buildSurface(__out std::string& sErrorMsg);
+    virtual bool buildSurface(OUT std::string& sErrorMsg);
 };
 

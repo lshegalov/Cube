@@ -19,9 +19,9 @@ Polyhedron::~Polyhedron()
 }
 
 bool Polyhedron::addPolygonFromPoints(
-    __in const std::vector<Point3D>& points,
-    __out long& lPolygonSequentialNumber,
-    __out std::string& sErrorMsg)
+    IN const std::vector<Point3D>& points,
+    OUT long& lPolygonSequentialNumber,
+    OUT std::string& sErrorMsg)
 {
     lPolygonSequentialNumber = -1;
 
@@ -45,10 +45,10 @@ bool Polyhedron::addPolygonFromPoints(
         long lSideSequentialNumber = -1;
 
         // add edge if it does not exist, otherwise return existing lEdgeSequentialNumber
-        if ( ! addSide(__in prevPoint, // startPoint
-                       __in point,     // endPoint,
-                       __out lSideSequentialNumber,
-                       __out sErrorMsg))
+        if ( ! addSide(IN prevPoint, // startPoint
+                       IN point,     // endPoint,
+                       OUT lSideSequentialNumber,
+                       OUT sErrorMsg))
         {
             return false;
         }
@@ -62,9 +62,9 @@ bool Polyhedron::addPolygonFromPoints(
   
     
     // add edge if it does not exist, otherwise return existing lEdgeSequentialNumber
-    if ( ! addSide(__in prevPoint, globalStartPoint,
-                   __out lLastSideSequentialNumber,
-                   __out sErrorMsg))
+    if ( ! addSide(IN prevPoint, globalStartPoint,
+                   OUT lLastSideSequentialNumber,
+                   OUT sErrorMsg))
     {
         return false;
     }
@@ -82,28 +82,28 @@ bool Polyhedron::addPolygonFromPoints(
     Poligon poligon(this, lPolygonSequentialNumber, lSideSequentialNumbers);
     m_polygons[lPolygonSequentialNumber] = poligon;
 
-    return poligon.checkValidityOfPoligon(__out sErrorMsg);
+    return poligon.checkValidityOfPoligon(OUT sErrorMsg);
 }
 
 bool Polyhedron::addPolygonFromSides(
-    __in const std::vector<long>& sideNumbers,
-    __out long& lPolygonSequentialNumber,
-    __out std::string& sErrorMsg)
+    IN const std::vector<long>& sideNumbers,
+    OUT long& lPolygonSequentialNumber,
+    OUT std::string& sErrorMsg)
 {
     lPolygonSequentialNumber = (long) m_polygons.size();
 
     Poligon poligon(this, lPolygonSequentialNumber, sideNumbers);
     m_polygons[lPolygonSequentialNumber] = poligon;
 
-    return poligon.checkValidityOfPoligon(__out sErrorMsg);
+    return poligon.checkValidityOfPoligon(OUT sErrorMsg);
 }
 
 // add side if it does not exist, otherwise return existing lEdgeSequentialNumber
 bool Polyhedron::addSide(
-    __in const Point3D& startPoint,
-    __in const Point3D& endPoint,
-    __out long & lSideSequentialNumber,
-    __out std::string& sErrorMsg)
+    IN const Point3D& startPoint,
+    IN const Point3D& endPoint,
+    OUT long & lSideSequentialNumber,
+    OUT std::string& sErrorMsg)
 {
     if (startPoint == endPoint)
     {
@@ -135,18 +135,18 @@ bool Polyhedron::addSide(
     // new edge
 
     // append to the end without checking existing edges
-    appendSide(__in startPoint,
-               __in endPoint,
-               __out lSideSequentialNumber);
+    appendSide(IN startPoint,
+               IN endPoint,
+               OUT lSideSequentialNumber);
 
     return true;
 }
 
 // to the end without checking existing edges
 void Polyhedron::appendSide(
-    __in const Point3D& startPoint,
-    __in const Point3D& endPoint,
-    __out long& lSideSequentialNumber)
+    IN const Point3D& startPoint,
+    IN const Point3D& endPoint,
+    OUT long& lSideSequentialNumber)
 {
     // new side
 
@@ -161,10 +161,12 @@ void Polyhedron::appendSide(
         lSideSequentialNumber++;
     }
 
+#ifdef _DEBUG
     if (TEST_SIDE == lSideSequentialNumber)
     {
         int k = 0;
     }
+#endif
 
     DirectionalSide newSide(lSideSequentialNumber, startPoint, endPoint);
 
@@ -212,14 +214,14 @@ void Polyhedron::updateOppositeSide(long lForwardSideSequentialNumber)
 }
 
 bool Polyhedron::getSide(
-    __in long lSequentialNumber,
-    __out DirectionalSide** ppSide,
-    __out std::string& sErrorMsg) 
+    IN long lSequentialNumber,
+    OUT DirectionalSide** ppSide,
+    OUT std::string& sErrorMsg) 
 {
     std::map<long, DirectionalSide>::iterator sideIter = m_sides.find(lSequentialNumber);
     if (sideIter == m_sides.cend())
     {
-        sprintf_s(m_szErrorMsg, "%s:%d nEdgeIndex=%d is not found size=%zd\n",
+        sprintf_s(m_szErrorMsg, "%s:%d nEdgeIndex=%ld is not found size=%zd\n",
             __FILE__, __LINE__, lSequentialNumber, m_sides.size());
         sErrorMsg = m_szErrorMsg;
 
@@ -232,7 +234,7 @@ bool Polyhedron::getSide(
 }
 
 // main split function
-bool Polyhedron::splitOnePolygon(__out std::string& sErrorMsg)
+bool Polyhedron::splitOnePolygon(OUT std::string& sErrorMsg)
 {
     sErrorMsg[0] = '\0';
 
@@ -253,7 +255,7 @@ bool Polyhedron::splitOnePolygon(__out std::string& sErrorMsg)
         // rand() generate random numbers in the range [0, RAND_MAX). 
         nIndex = (int)(nNumberOfPolygons * (1.0 * rand()) / RAND_MAX);
 
-        if (nIndex < 0 || nIndex >= nNumberOfPolygons)
+        if (nIndex < 0 || nIndex >= (int) nNumberOfPolygons)
         {
 
             continue;
@@ -277,7 +279,7 @@ bool Polyhedron::splitOnePolygon(__out std::string& sErrorMsg)
     Splitter splitter(this);
 
     long lNewPolygonSequentialNumber = -1;
-    if ( ! splitter.splitPoligon(__inout polygon, __out lNewPolygonSequentialNumber, __out sErrorMsg))
+    if ( ! splitter.splitPoligon(__inout polygon, OUT lNewPolygonSequentialNumber, OUT sErrorMsg))
     {
         return false;
     }
@@ -292,8 +294,8 @@ size_t Polyhedron::getNumberOfPoligons() const
 
 // clean up if that side is not used in any polygons
 bool Polyhedron::deleteUnusedSide(
-    __in long lSideSequentialNumber, 
-    __out std::string& sErrorMsg)
+    IN long lSideSequentialNumber, 
+    OUT std::string& sErrorMsg)
 {
     std::map<long, DirectionalSide>::iterator sideIter = m_sides.find(lSideSequentialNumber);
     if (sideIter == m_sides.end())
@@ -307,7 +309,7 @@ bool Polyhedron::deleteUnusedSide(
     long lOppositeSide = side.getOppositeSideSequentialNumber();
 
     // check what that edge is not referenced in all polygons
-    bool bIsFound = false;
+    //bool bIsFound = false;
 
     for (std::map<long, Poligon>::const_iterator polygonIter = m_polygons.cbegin();
         polygonIter != m_polygons.cend(); polygonIter++)
@@ -350,8 +352,8 @@ bool Polyhedron::deleteUnusedSide(
 }
 
 bool Polyhedron::getStatsPerPolygons(
-    __out Results & results,
-    __out std::string& sErrorMsg)
+    OUT Results & results,
+    OUT std::string& sErrorMsg)
 {
     results.lNumberOfPolygons = (long) m_polygons.size();
 
@@ -369,7 +371,7 @@ bool Polyhedron::getStatsPerPolygons(
         const Poligon & polygon = polygonIter->second;
 
         size_t nNumberOfPoints = 0;
-        if ( ! polygon.getNumberOfPoints(__out & nNumberOfPoints, __out sErrorMsg))
+        if ( ! polygon.getNumberOfPoints(OUT & nNumberOfPoints, OUT sErrorMsg))
         {
             return false;
         }
@@ -394,7 +396,7 @@ bool Polyhedron::getStatsPerPolygons(
 }
 
 
-bool Polyhedron::updateStats(__in int nNumberOfSteps, __inout Results& results, __out std::string& sErrorMsg)
+bool Polyhedron::updateStats(IN int nNumberOfSteps, __inout Results& results, OUT std::string& sErrorMsg)
 {
     int nTotalNumberOfEdges = 0;
     int nTotalNumberOfSides = 0;
@@ -407,7 +409,7 @@ bool Polyhedron::updateStats(__in int nNumberOfSteps, __inout Results& results, 
         const Poligon& polygon = polygonIter->second;
 
         size_t nNumberOfPoints = 0;
-        if (! polygon.getNumberOfPoints(__out & nNumberOfPoints, __out sErrorMsg))
+        if (! polygon.getNumberOfPoints(OUT & nNumberOfPoints, OUT sErrorMsg))
         {
             return false;
         }
@@ -430,16 +432,16 @@ bool Polyhedron::updateStats(__in int nNumberOfSteps, __inout Results& results, 
 
 bool Polyhedron::printEdges(
     const char* szFileName,
-    __out std::string& sErrorMsg)  const
+    OUT std::string& sErrorMsg)  const
 {
     SyncFileWriter fileWriter;
 
     const char* szOutputDirectory = "D:\\AlexLevin\\src\\ConsoleApplication1";
 
-    if ( ! fileWriter.createFile(__in szOutputDirectory,
-        __in szFileName, // szOutputFileName, // with or without .csv or other extention
-        __in ".csv",     // szExtention,      // ".csv", ".ok" ...
-        __out sErrorMsg))
+    if ( ! fileWriter.createFile(IN szOutputDirectory,
+        IN szFileName, // szOutputFileName, // with or without .csv or other extention
+        IN ".csv",     // szExtention,      // ".csv", ".ok" ...
+        OUT sErrorMsg))
     {
         return false;
     }
@@ -468,16 +470,16 @@ bool Polyhedron::printEdges(
 
 bool Polyhedron::printPolygons(
     const char* szFileName,
-    __out std::string& sErrorMsg)  const
+    OUT std::string& sErrorMsg)  const
 {
     SyncFileWriter fileWriter;
 
     const char* szOutputDirectory = "D:\\AlexLevin\\src\\ConsoleApplication1";
 
-    if (!fileWriter.createFile(__in szOutputDirectory,
-        __in szFileName, // szOutputFileName, // with or without .csv or other extention
-        __in ".csv",     // szExtention,      // ".csv", ".ok" ...
-        __out sErrorMsg))
+    if (!fileWriter.createFile(IN szOutputDirectory,
+        IN szFileName, // szOutputFileName, // with or without .csv or other extention
+        IN ".csv",     // szExtention,      // ".csv", ".ok" ...
+        OUT sErrorMsg))
     {
         return false;
     }
@@ -503,17 +505,17 @@ bool Polyhedron::printPolygons(
 }
 
 bool Polyhedron::insertPointIntoSide(
-    __in long lSideSequentialNumber,
-    __in const Point3D& midPoint,
-    __out  std::string& sErrorMsg)
+    IN long lSideSequentialNumber,
+    IN const Point3D& midPoint,
+    OUT  std::string& sErrorMsg)
 {
     DirectionalSide* pSide = nullptr;
-    if ( ! getSide(__in lSideSequentialNumber,
-                   __out & pSide,
-                   __out sErrorMsg))
+    if ( ! getSide(IN lSideSequentialNumber,
+                   OUT & pSide,
+                   OUT sErrorMsg))
     {
         return false;
     }
 
-    return pSide->insertOneInternalPoint(__in midPoint, __out sErrorMsg);
+    return pSide->insertOneInternalPoint(IN midPoint, OUT sErrorMsg);
 }

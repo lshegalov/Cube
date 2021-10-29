@@ -10,8 +10,8 @@ public:
     Splitter(Polyhedron* pPolyhedron);
 
     bool splitPoligon(__inout Poligon& oldPolygon, 
-                      __out long& lNewPolygonSequentialNumber,
-                      __out std::string& sErrorMsg);
+                      OUT long& lNewPolygonSequentialNumber,
+                      OUT std::string& sErrorMsg);
 
 private:
     struct SplittedEdgeInfo
@@ -49,42 +49,42 @@ private:
         }
     };
 
-    bool createSplittedEdgeInfos(__in const Poligon& oldPolygon, __out std::string& sErrorMsg);
+    bool createSplittedEdgeInfos(IN const Poligon& oldPolygon, OUT std::string& sErrorMsg);
 
-    bool generateRandomEdgesToSplit(__in const Poligon& oldPolygon, 
-                                    __out std::set<int> & edgesSidesToSplit,
-                                    __out std::string& sErrorMsg);
+    bool generateRandomEdgesToSplit(IN const Poligon& oldPolygon, 
+                                    OUT std::set<int> & edgesSidesToSplit,
+                                    OUT std::string& sErrorMsg);
 
-    bool checkValidityOfSelectedSides(__in const std::vector<long>& oldSideNumbers, // side sequential numbers
-                                      __in const std::set<int> & edgesSidesToSplit,
-                                      __out std::string& sErrorMsg);
+    bool checkValidityOfSelectedSides(IN const std::vector<long>& oldSideNumbers, // side sequential numbers
+                                      IN const std::set<int> & edgesSidesToSplit,
+                                      OUT std::string& sErrorMsg);
 
     SplittedEdgeInfo* getFirstSplitInfo();
 
     SplittedEdgeInfo* getSecondSplitInfo();
 
     // split existing 2 sides into two each
-    bool createFourNewSides(__out std::string& sErrorMsg);
+    bool createFourNewSides(OUT std::string& sErrorMsg);
 
     bool createTwoNewSidesOutOfOldOne(__inout SplittedEdgeInfo& splitInfo, // returns lFirstHalfSideSequentialNumber,
                                                                           // lSecondHalfSideSequentialNumber,
-                                      __out std::string& sErrorMsg);
+                                      OUT std::string& sErrorMsg);
 
     // insert midPoint into old side and its opposite
     bool insertMidPointInTheOldSide(
-        __in const SplittedEdgeInfo & splitInfo, 
-        __out std::string& sErrorMsg);
+        IN const SplittedEdgeInfo & splitInfo, 
+        OUT std::string& sErrorMsg);
 
     // create new sides between mid points
-    bool insertMidPointSides(__out std::string& sErrorMsg);
+    bool insertMidPointSides(OUT std::string& sErrorMsg);
 
-    bool insertPointIntoSide(__in long lSideSequentialNumber,
-                             __in const Point3D & newPoint,
-                             __out std::string& sErrorMsg);
+    bool insertPointIntoSide(IN long lSideSequentialNumber,
+                             IN const Point3D & newPoint,
+                             OUT std::string& sErrorMsg);
 
     bool makeNewPolygonAndUpdateOld(__inout Poligon& oldPolygon,
-                                    __out long& lNewPolygonSequentialNumber,
-                                    __out std::string& sErrorMsg);
+                                    OUT long& lNewPolygonSequentialNumber,
+                                    OUT std::string& sErrorMsg);
 
 private:
     Polyhedron* m_pPolyhedron = nullptr;

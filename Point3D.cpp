@@ -124,7 +124,7 @@ void Point3D::add(double dX, double dY, double dZ)
 }
 
 // static
-void Point3D::getMidPoint(const Point3D& startPoint, const Point3D& endPoint, __out Point3D& midPoint) 
+void Point3D::getMidPoint(const Point3D& startPoint, const Point3D& endPoint, OUT Point3D& midPoint) 
 {
     midPoint.m_dX = (startPoint.m_dX + endPoint.m_dX) / 2.;
 

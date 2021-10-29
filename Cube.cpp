@@ -20,7 +20,7 @@ Cube::~Cube()
 }
 
 // virtual
-bool Cube::buildSurface(__out std::string& sErrorMsg)
+bool Cube::buildSurface(OUT std::string& sErrorMsg)
 {
     
     // bottom and top faces
@@ -46,7 +46,7 @@ bool Cube::buildSurface(__out std::string& sErrorMsg)
 
         // build initial polygons from point sequence 
         long lPolygonSequentialNumber = -1;
-        if ( ! addPolygonFromPoints(__in points, __out lPolygonSequentialNumber, __out sErrorMsg))
+        if ( ! addPolygonFromPoints(IN points, OUT lPolygonSequentialNumber, OUT sErrorMsg))
         {
             return false;
         }
@@ -76,7 +76,7 @@ bool Cube::buildSurface(__out std::string& sErrorMsg)
 
         // build initial polygons from point sequence 
         long lPolygonSequentialNumber = -1;
-        if ( ! addPolygonFromPoints(__in points, __out lPolygonSequentialNumber, __out sErrorMsg))
+        if ( ! addPolygonFromPoints(IN points, OUT lPolygonSequentialNumber, OUT sErrorMsg))
         {
             return false;
         }
@@ -106,7 +106,7 @@ bool Cube::buildSurface(__out std::string& sErrorMsg)
 
         // build initial polygons from point sequence 
         long lPolygonSequentialNumber = -1;
-        if ( ! addPolygonFromPoints(__in points, __out lPolygonSequentialNumber, __out sErrorMsg))
+        if ( ! addPolygonFromPoints(IN points, OUT lPolygonSequentialNumber, OUT sErrorMsg))
         {
             return false;
         }

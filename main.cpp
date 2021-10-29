@@ -23,7 +23,7 @@ int main()
 
     Results results;
 
-    if ( ! simulation.runOnCube(nNumberOfSteps, __out results, __out sErrorMsg))
+    if ( ! simulation.runOnCube(nNumberOfSteps, OUT results, OUT sErrorMsg))
     {
         std::cerr << "Failed :" << sErrorMsg <<std::endl;
     }
